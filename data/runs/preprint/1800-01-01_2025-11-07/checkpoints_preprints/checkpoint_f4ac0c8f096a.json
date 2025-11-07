@@ -1,0 +1,9 @@
+{
+  "signature": {
+    "query": "types.resourceType:\"preprint\"",
+    "from-registered-date": "1800-01-01",
+    "until-registered-date": "2025-11-07"
+  },
+  "next_cursor": null,
+  "saved_at": "2025-11-07T20:50:17.472907+00:00"
+}

@@ -1,0 +1,39 @@
+field_name,type,description,source_path,example,notes
+doi,string,Digital Object Identifier for the record.,attributes.doi,10.5281/zenodo.1234567,
+url,string,Landing page URL provided by DataCite.,attributes.url,https://zenodo.org/record/1234567,
+publisher,string,Entity responsible for publishing/hosting the record.,attributes.publisher,Zenodo,
+language,string,Language of the record (IETF code or free text).,attributes.language,en,
+version,string,Version label for the record (if any).,attributes.version,v2,
+schema_version,string,Metadata schema version used by the repository.,attributes.schemaVersion,http://datacite.org/schema/kernel-4,
+state,string,DataCite DOI state.,attributes.state,findable,"Common values: findable, registered, draft"
+prefix,string,DOI prefix (fallback: parsed from DOI).,attributes.prefix OR derived from doi,10.5281,"If attributes.prefix is missing, derived from DOI string before first slash."
+client_id,string,DataCite client ID (repository tenant).,relationships.client.data.id OR attributes.clientId,cern.zenodo,"If provider missing, may infer provider as the part before the first dot."
+provider_id,string,DataCite provider ID (member).,relationships.provider.data.id OR attributes.providerId OR parsed from client_id,cern,"If not provided, derived from client_id prefix before first dot."
+resource_type,string,Specific resource type label.,attributes.types.resourceType,Preprint,Free-text label supplied by repository.
+resource_type_general,string,General resource type (DataCite controlled list).,attributes.types.resourceTypeGeneral,Text,"Examples: Text, Dataset, Software, Image, Collection."
+types_json,JSON string,"Raw types object, JSON-serialized.",attributes.types,"{""resourceType"": ""Preprint"", ...}",JSON-serialized for reproducibility.
+title,string,Primary title (first title entry).,attributes.titles[0].title,A Comprehensive Preprint Study,HTML entities unescaped.
+titles_json,JSON string,"All title entries, JSON-serialized.",attributes.titles,"[{""title"":""...""}]",Preserves parallel titles/subtitles.
+created,date (YYYY-MM-DD),Record creation date normalized to date.,attributes.created,2024-07-15,"Normalized from ISO; if time zone present, converted to date in UTC."
+registered,date (YYYY-MM-DD),DOI registration date normalized to date.,attributes.registered,2024-07-16,
+updated,date (YYYY-MM-DD),Last metadata update date normalized to date.,attributes.updated,2024-12-01,
+published,string,Published date as provided (can be year or freeform).,attributes.published,2024,May not be ISO date; use published_year when available.
+published_year,integer,Publication year if supplied.,attributes.publicationYear,2024,
+creators_json,JSON string,"List of creators (authors), JSON-serialized.",attributes.creators,"[{""name"":""Smith, Jane"", ...}]",
+contributors_json,JSON string,"List of contributors, JSON-serialized.",attributes.contributors,"[{""name"":""Doe, John"", ""contributorType"":""Editor""}]",
+subjects_json,JSON string,"Subjects/keywords, JSON-serialized.",attributes.subjects,"[{""subject"":""bibliometrics""}]",
+descriptions_json,JSON string,Free-text descriptions/abstracts.,attributes.descriptions,"[{""description"":""..."",""descriptionType"":""Abstract""}]",
+identifiers_json,JSON string,Additional identifiers.,attributes.identifiers,"[{""identifier"":""arXiv:2001.00001""}]",
+alternate_ids_json,JSON string,Alternate identifiers.,attributes.alternateIdentifiers,"[{""alternateIdentifier"":""HAL:hal-12345""}]",
+related_ids_json,JSON string,Related identifiers (relations).,attributes.relatedIdentifiers,"[{""relationType"":""IsPreprintOf"",""relatedIdentifier"":""...""}]",
+container_json,JSON string,Container/journal/conference info.,attributes.container,"{""type"":""Journal"",""title"":""...""}",
+funding_refs_json,JSON string,Funding references.,attributes.fundingReferences,"[{""funderName"":""NSF""}]",
+rights_list_json,JSON string,Rights/license statements.,attributes.rightsList,"[{""rightsUri"":""https://creativecommons.org/licenses/...""}]",
+sizes_json,JSON string,Sizes of the resource.,attributes.sizes,"[""1 file""]",
+formats_json,JSON string,Formats of the resource.,attributes.formats,"[""text/html"",""application/pdf""]",
+geo_locations_json,JSON string,Geographic locations.,attributes.geoLocations,"[{""geoLocationPlace"":""...""}]",
+references_json,JSON string,Outbound references listed by the repository.,attributes.references,"[{""doi"":""10.1234/abc""}]",
+citations_json,JSON string,Inbound citations (if present).,attributes.citations,"[{""doi"":""10.5678/xyz""}]",Not widely populated in many repositories.
+url_alternate_json,JSON string,Alternate URLs.,attributes.urlAlternate,"[""https://...""]",
+raw_attributes_json,JSON string,Full attributes object snapshot.,attributes,{...},For auditing and reproducibility.
+raw_relationships_json,JSON string,Full relationships object snapshot.,relationships,{...},For auditing and reproducibility.

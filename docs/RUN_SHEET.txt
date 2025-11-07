@@ -1,0 +1,157 @@
+RUN SHEET — DataCite Preprints Harvester
+======================================
+
+Project: datacite-preprints-harvester
+Maintainer: Maxime Descartes Mbogning Fonkou
+Supervisor : Juan Alperin,
+Last Updated: 2025-11-07
+
+This run sheet documents the operational parameters, environment, and steps used to execute harvesting runs of DataCite preprint metadata. It ensures reproducibility, transparency, and auditability of all data collection workflows.
+
+------------------------------------------------------------
+1. SYSTEM & ENVIRONMENT
+------------------------------------------------------------
+• Python version: 3.10+
+• OS: Windows/Linux/macOS (tested on Windows 10)
+• Virtual environment: .venv
+• Required packages (see requirements.txt):
+  - requests
+  - pandas
+  - pyarrow
+  - tqdm
+  - python-dateutil
+
+Activate environment:
+    .venv\Scripts\activate   (Windows)
+    source .venv/bin/activate (Linux/Mac)
+
+------------------------------------------------------------
+2. MAIN HARVESTER
+------------------------------------------------------------
+Script:
+    scripts/run_harvest.py
+
+Entry point:
+    harvest_datacite_preprints_dataframe()
+
+------------------------------------------------------------
+3. RUN PARAMETERS
+------------------------------------------------------------
+resource_type_id     = "preprint"
+type_mode            = "canonical" / "label" / "both" (default: canonical)
+date_start           = "1800-01-01"
+date_end             = <today>
+mailto               = "YOUR_EMAIL@example.com"
+client_ids           = None  (or list of client-ids)
+rows_per_call        = 1000
+include_affiliation  = True
+resume               = True
+incremental_every    = 100000
+
+Directory structure:
+    data/runs/<resource_type>/<date_start>_<date_end>/
+        ├─ checkpoints_preprints/
+        └─ datacite_preprints_batches/
+
+------------------------------------------------------------
+4. RUN COMMAND
+------------------------------------------------------------
+
+To execute a full harvesting run:
+
+    python scripts/run_harvest.py
+
+This will:
+  ✅ Query DataCite API with the configured parameters  
+  ✅ Save checkpoints to resume after failures  
+  ✅ Write incremental Parquet chunks every N records  
+  ✅ Print progress and final shape in console  
+
+------------------------------------------------------------
+5. CHECKPOINT BEHAVIOR
+------------------------------------------------------------
+Checkpoints are stored in:
+
+    data/runs/<resource_type>/<date_start>_<date_end>/checkpoints_<resource_type>s/
+
+Each checkpoint records:
+  • query signature hash  
+  • next cursor  
+  • timestamp  
+
+Rerunning the script will automatically resume from the last cursor.
+
+------------------------------------------------------------
+6. OUTPUTS
+------------------------------------------------------------
+
+Incremental outputs:
+    data/runs/<resource_type>/<date_range>/datacite_<resource_type>s_batches/
+        datacite_preprints_chunk_00000.parquet
+        datacite_preprints_chunk_00001.parquet
+        ...
+
+Optional:
+    NDJSON stream
+    CSV
+    PKL
+
+------------------------------------------------------------
+7. MERGE PIPELINE
+------------------------------------------------------------
+
+To merge all Parquet shards into a single dataset:
+
+    python scripts/merge_runs.py
+
+Merged output:
+    data/merged/datacite_preprints_merged_<timestamp>.parquet
+
+------------------------------------------------------------
+8. FAILURE SCENARIOS & RECOVERY
+------------------------------------------------------------
+
+1) Script stops unexpectedly  
+   → Re-run run_harvest.py (resume enabled)
+
+2) Network interruptions  
+   → Automatic retry/backoff included
+
+3) Partial chunks written  
+   → All chunks preserved; safe to continue
+
+4) Memory overload  
+   → Incremental write prevents crashes
+
+------------------------------------------------------------
+9. LOGGING & VERIFICATION
+------------------------------------------------------------
+
+Verify last written chunk:
+    Check datacite_preprints_batches folder
+
+Verify checkpoint:
+    Check latest checkpoint JSON for cursor position
+
+Validate merged output schema:
+    Use pyarrow to inspect final Parquet file
+
+------------------------------------------------------------
+10. END OF RUN LOG TEMPLATE
+------------------------------------------------------------
+
+Suggested copy/paste log entry after each run:
+
+    RUN DATE:         <YYYY-MM-DD>
+    RESOURCE TYPE:    preprint
+    DATE RANGE:       1800-01-01 to <today>
+    TOTAL RECORDS:    <from final print>
+    CHUNKS WRITTEN:   <count>
+    CHECKPOINTS:      <count>
+    MERGED OUTPUT:    data/merged/datacite_preprints_merged_<timestamp>.parquet
+    NOTES:            <issues, anomalies, metadata concerns>
+
+------------------------------------------------------------
+
+This RUN_SHEET ensures that all harvesting activities follow a transparent,
+controlled, reproducible workflow for large-scale metadata collection.

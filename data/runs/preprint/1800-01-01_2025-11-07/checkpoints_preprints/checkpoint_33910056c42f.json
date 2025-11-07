@@ -1,0 +1,9 @@
+{
+  "signature": {
+    "query": "types.resourceType:\"None\"",
+    "from-registered-date": "1800-01-01",
+    "until-registered-date": "2025-11-07"
+  },
+  "next_cursor": null,
+  "saved_at": "2025-11-07T20:57:06.367738+00:00"
+}
