@@ -309,7 +309,7 @@ df["provider_id"].value_counts()
 df.isna().mean().sort_values()
 ```
 
-## ✅ Crossref / OpenAlex joining
+## ✅ Crossref / Crossref joining
 
 ```python
 merged = df.merge(crossref_df, on="doi", how="inner")
